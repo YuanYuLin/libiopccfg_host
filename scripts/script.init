@@ -1,6 +1,4 @@
 #!/bin/sh
-CFG_PATH="/vms/configs"
-CFG_UTIL="/usr/local/bin/iopccfg"
 
 get_value()
 {
@@ -35,11 +33,29 @@ get_array_string()
   done
 }
 
+init_variables()
+{
+  CFG_FILE="$CFG_PATH/$SCRIPT_NAME.json"
+  DEF_JSON_FILE="$DEF_CFG_PATH/$SCRIPT_NAME.json"
+  GEN_START="$GEN_PATH/start_$SCRIPT_NAME"
+  GEN_STOP="$GEN_PATH/stop_$SCRIPT_NAME"
+}
+
 check_file()
 {
-  CFG_FILE=$1
+  IS_FOUND="0"
+
   if [ ! -f $CFG_FILE ]; then
-    echo "$CFG_FILE not found!"
-    exit 1
+    mkdir $CFG_PATH
+    IS_FOUND="1"
+  fi
+
+  if [ "$IS_FOUND" == "1" ]; then
+    if [ ! -f "$DEF_JSON_FILE" ]; then
+      echo "$CFG_FILE not found!"
+      exit 1
+    fi
+
+    cp $DEF_JSON_FILE $CFG_FILE
   fi
 }

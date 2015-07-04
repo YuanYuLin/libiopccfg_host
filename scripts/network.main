@@ -1,16 +1,12 @@
 #!/bin/sh
 SCRIPT_NAME="network"
 ACTION=$1
-SCRIPT_PATH="/usr/scripts"
+SCRIPT_PATH="/opt/iopc/scripts"
 GEN_PATH="/tmp/gen_scripts"
+CFG_PATH="/vms/configs"
+DEF_CFG_PATH="/opt/iopc/defconfig"
+CFG_UTIL="/usr/local/bin/iopccfg"
 
 . $SCRIPT_PATH/script.init
-
-CFG_FILE="$CFG_PATH/$SCRIPT_NAME.json"
-
-GEN_START="$GEN_PATH/start_$SCRIPT_NAME"
-GEN_STOP="$GEN_PATH/start_$SCRIPT_NAME"
-
-check_file "$CFG_FILE"
 
 . $SCRIPT_PATH/script.run $ACTION

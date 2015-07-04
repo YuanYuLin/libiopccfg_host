@@ -54,6 +54,8 @@ func_generate()
       echo "udhcpc -i $NW_IFC_NAME"			>> "$GEN_START.$IDX"
     fi
 
+    chmod 755 "$GEN_START.$IDX"
+    chmod 755 "$GEN_STOP.$IDX"
     IDX=$(($IDX + 1))
   done
 }

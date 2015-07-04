@@ -1,5 +1,11 @@
 #!/bin/sh
 
+init_variables
+
+check_file
+
+mkdir -p $GEN_PATH
+
 if [ -f $SCRIPT_PATH/$SCRIPT_NAME.generate ]; then
   . $SCRIPT_PATH/$SCRIPT_NAME.generate
 fi
