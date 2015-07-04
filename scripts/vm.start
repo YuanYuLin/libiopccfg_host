@@ -1,0 +1,26 @@
+#!/bin/sh
+
+func_start()
+{
+  get_value "$CFG_FILE" "type"
+  NW_TYPE=$GET_VALUE
+
+  get_value "$CFG_FILE" "version"
+  NW_VERSION=$GET_VALUE
+
+  get_array_size "$CFG_FILE" "vms"
+  LOOP_COUNT=$GET_ARRAY_SIZE
+  IDX=0
+
+  while [ "$IDX" != "$LOOP_COUNT" ]
+  do
+    get_value "$CFG_FILE" "vms[$IDX].start_on_boot"
+    START_ON_BOOT=$GET_VALUE
+
+    if [ "$START_ON_BOOT" == "1" ]; then
+      . $GEN_START.$IDX
+    fi
+
+    IDX=$(($IDX + 1))
+  done
+}

@@ -1,0 +1,101 @@
+#!/bin/sh
+
+func_generate()
+{
+  get_value "$CFG_FILE" "type"
+  NW_TYPE=$GET_VALUE
+
+  get_value "$CFG_FILE" "version"
+  NW_VERSION=$GET_VALUE
+
+  get_array_size "$CFG_FILE" "vms"
+  LOOP_COUNT=$GET_ARRAY_SIZE
+  IDX=0
+
+  while [ "$IDX" != "$LOOP_COUNT" ]
+  do
+    get_value "$CFG_FILE" "vms[$IDX].start_on_boot"
+    VM_START_ON_BOOT=$GET_VALUE
+
+    get_value "$CFG_FILE" "vms[$IDX].rootfs_img"
+    VM_ROOTFS_IMG=$GET_VALUE
+
+    get_value "$CFG_FILE" "vms[$IDX].fs_type"
+    VM_FS_TYPE=$GET_VALUE
+
+    get_value "$CFG_FILE" "vms[$IDX].rootfs"
+    VM_ROOTFS=$GET_VALUE
+
+    get_value "$CFG_FILE" "vms[$IDX].name"
+    VM_NAME=$GET_VALUE
+
+    get_value "$CFG_FILE" "vms[$IDX].tty"
+    VM_TTY=$GET_VALUE
+
+    get_array_size "$CFG_FILE" "vms[$IDX].network"
+    LOOP_COUNT2=$GET_ARRAY_SIZE
+    IDX2=0
+
+    while [ "$IDX2" != "$LOOP_COUNT2" ]
+    do
+      get_value "$CFG_FILE" "vms[$IDX].network[$IDX2].type"
+      VM_NET_TYPE=$GET_VALUE
+
+      get_value "$CFG_FILE" "vms[$IDX].network[$IDX2].flags"
+      VM_NET_FLAGS=$GET_VALUE
+
+      get_value "$CFG_FILE" "vms[$IDX].network[$IDX2].link"
+      VM_NET_LINK=$GET_VALUE
+
+      get_value "$CFG_FILE" "vms[$IDX].network[$IDX2].hwaddr"
+      VM_NET_HWADDR=$GET_VALUE
+
+      get_value "$CFG_FILE" "vms[$IDX].network[$IDX2].method"
+      VM_NET_METHOD=$GET_VALUE
+
+      IDX2=$(($IDX2 + 1))
+    done
+
+    get_value "$CFG_FILE" "vms[$IDX].kmsg"
+    VM_KMSG=$GET_VALUE
+
+    #--create start shell script
+    echo "#!/bin/sh"				> "$GEN_START.$IDX"
+    echo "mkdir -p $VM_ROOTFS"			>> "$GEN_START.$IDX"
+    echo "mount -t $VM_FS_TYPE $VM_ROOTFS_IMG $VM_ROOTFS"	>> "$GEN_START.$IDX"
+    echo "lxc-create -n $VM_NAME -f $VM_CFG_FILE.$IDX.cfg"	>> "$GEN_START.$IDX"
+    echo "lxc-start -n $VM_NAME -d"		>> "$GEN_START.$IDX"
+
+    #--create stop shell script
+    echo "#!/bin/sh"				> "$GEN_START.$IDX"
+    echo "sync"					>> "$GEN_START.$IDX"
+    echo "lxc-stop -n $VM_NAME"			>> "$GEN_START.$IDX"
+    echo "umount $VM_ROOTFS"			>> "$GEN_START.$IDX"
+    echo "lxc-destroy -n $VM_NAME"		>> "$GEN_START.$IDX"
+
+    #--create config file
+    echo "#LXC config"			>  "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.utsname=$VM_NAME"		>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.rootfs=$VM_ROOTFS"	>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.tty=$VM_TTY"		>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.network.type=$VM_NET_TYPE"	>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.network.flag=$VM_NET_FLAGS"	>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.network.link=$VM_NET_LINK"	>> "$VM_CFG_FILE.$IDX.cfg"
+    echo "lxc.network.hwaddr=$VM_NET_HWADDR"	>> "$VM_CFG_FILE.$IDX.cfg"
+
+    get_array_size "$CFG_FILE" "vms[$IDX].mount"
+    LOOP_COUNT=$GET_ARRAY_SIZE
+    IDX2=0
+
+    while [ "$IDX2" != "$LOOP_COUNT" ]
+    do
+      get_array_string "$CFG_FILE" "vms[$IDX].mount[$IDX2].entry"
+      VM_MOUNT_ENTRY=$GET_ARRAY_STRING
+
+      echo "lxc.mount.entry=$VM_MOUNT_ENTRY"	>> "$VM_CFG_FILE.$IDX.cfg"
+      IDX2=$(($IDX2 + 1))
+    done
+
+    IDX=$(($IDX + 1))
+  done
+}

@@ -1,0 +1,59 @@
+#!/bin/sh
+
+func_generate()
+{
+  get_value "$CFG_FILE" "type"
+  NW_TYPE=$GET_VALUE
+
+  get_value "$CFG_FILE" "version"
+  NW_VERSION=$GET_VALUE
+
+  get_array_size "$CFG_FILE" "interfaces"
+  LOOP_COUNT=$GET_ARRAY_SIZE
+  IDX=0
+
+  while [ "$IDX" != "$LOOP_COUNT" ]
+  do
+    get_value "$CFG_FILE" "interfaces[$IDX].type"
+    NW_IFC_TYPE=$GET_VALUE
+
+    get_value "$CFG_FILE" "interfaces[$IDX].name"
+    NW_IFC_NAME=$GET_VALUE
+
+    get_value "$CFG_FILE" "interfaces[$IDX].method"
+    NW_IFC_METHOD=$GET_VALUE
+
+    get_array_string "$CFG_FILE" "interfaces[$IDX].devices"
+    NW_IFC_DEVICES=$GET_ARRAY_STRING
+
+    get_value "$CFG_FILE" "interfaces[$IDX].hwaddress"
+    NW_IFC_HW_ADDRESS=$GET_VALUE
+
+    if [ "$NW_IFC_TYPE" == "bridge" ]; then
+      echo "#!/bin/sh"					>  "$GEN_START.$IDX"
+      echo "echo 1 > /proc/sys/net/ipv4/ip_forward"	>> "$GEN_START.$IDX"
+      echo "#!/bin/sh"					>  "$GEN_STOP.$IDX"
+      echo "echo 0 > /proc/sys/net/ipv4/ip_forward"	>> "$GEN_STOP.$IDX"
+
+      for ifc in $NW_IFC_DEVICES
+      do
+        echo "ifconfig $ifc hw ether $NW_IFC_HW_ADDRESS">> "$GEN_START.$IDX"
+        echo "ifconfig $ifc 0.0.0.0"			>> "$GEN_START.$IDX"
+        echo "ifconfig $ifc hw ether $NW_IFC_HW_ADDRESS">> "$GEN_STOP.$IDX"
+        echo "ifconfig $ifc 0.0.0.0"			>> "$GEN_STOP.$IDX"
+      done
+      echo "brctl addbr $NW_IFC_NAME"			>> "$GEN_START.$IDX"
+      echo "brctl addif $NW_IFC_NAME $NW_IFC_DEVICES"	>> "$GEN_START.$IDX"
+      echo "ip link set up dev $NW_IFC_NAME"		>> "$GEN_START.$IDX"
+      echo "ip link set down dev $NW_IFC_NAME"		>> "$GEN_STOP.$IDX"
+      echo "brctl delif $NW_IFC_NAME $NW_IFC_DEVICES"	>> "$GEN_STOP.$IDX"
+      echo "brctl delbr $NW_IFC_NAME"			>> "$GEN_STOP.$IDX"
+    fi
+
+    if [ "$NW_IFC_METHOD" == "dhcp" ]; then
+      echo "udhcpc -i $NW_IFC_NAME"			>> "$GEN_START.$IDX"
+    fi
+
+    IDX=$(($IDX + 1))
+  done
+}

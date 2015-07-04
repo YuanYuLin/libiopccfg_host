@@ -1,0 +1,8 @@
+{
+    "type":"network",
+    "version":1,
+    "interfaces":[
+        {"start_on_boot":1, "type":"bridge", "name":"br0", "method":"dhcp", "hwaddress":"00:20:13:03:21:99", "devices":["eth0"]},
+    ]
+}
+

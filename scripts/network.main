@@ -1,0 +1,16 @@
+#!/bin/sh
+SCRIPT_NAME="network"
+ACTION=$1
+SCRIPT_PATH="/usr/scripts"
+GEN_PATH="/tmp/gen_scripts"
+
+. $SCRIPT_PATH/script.init
+
+CFG_FILE="$CFG_PATH/$SCRIPT_NAME.json"
+
+GEN_START="$GEN_PATH/start_$SCRIPT_NAME"
+GEN_STOP="$GEN_PATH/start_$SCRIPT_NAME"
+
+check_file "$CFG_FILE"
+
+. $SCRIPT_PATH/script.run $ACTION

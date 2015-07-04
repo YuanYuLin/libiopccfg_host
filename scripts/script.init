@@ -1,0 +1,45 @@
+#!/bin/sh
+CFG_PATH="/vms/configs"
+CFG_UTIL="/usr/local/bin/iopccfg"
+
+get_value()
+{
+  CFG_FILE=$1
+  string_get_value=$2
+  GET_VALUE=`$CFG_UTIL -f $CFG_FILE -k $string_get_value -v`
+}
+
+get_array_size()
+{
+  CFG_FILE=$1
+  string_array_size=$2
+  GET_ARRAY_SIZE=`$CFG_UTIL -f $CFG_FILE -k $string_array_size -l`
+}
+
+get_array_string()
+{
+  CFG_FILE=$1
+  string_array_string=$2
+  GET_ARRAY_STRING=""
+  ARRAY_IDX=0
+
+  get_array_size "$CFG_FILE" "$string_array_string"
+  ARRAY_SIZE=$GET_ARRAY_SIZE
+
+  while [ "$ARRAY_IDX" != "$ARRAY_SIZE" ]
+  do
+    get_value "$CFG_FILE" "$string_array_string[$ARRAY_IDX]"
+    GET_ARRAY_STRING="$GET_ARRAY_STRING $GET_VALUE"
+
+    ARRAY_IDX=$(($ARRAY_IDX + 1))
+  done
+}
+
+check_file()
+{
+  CFG_FILE=$1
+  if [ ! -f $CFG_FILE ]; then
+    echo "$CFG_FILE not found!"
+    exit 1
+  fi
+}

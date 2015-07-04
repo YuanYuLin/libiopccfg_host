@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if [ -f $SCRIPT_PATH/$SCRIPT_NAME.generate ]; then
+  . $SCRIPT_PATH/$SCRIPT_NAME.generate
+fi
+
+if [ -f $SCRIPT_PATH/$SCRIPT_NAME.start ]; then
+  . $SCRIPT_PATH/$SCRIPT_NAME.start
+fi
+
+if [ -f $SCRIPT_PATH/$SCRIPT_NAME.stop ]; then
+  . $SCRIPT_PATH/$SCRIPT_NAME.stop
+fi
+
+if [ -f $SCRIPT_PATH/$SCRIPT_NAME.status ]; then
+  . $SCRIPT_PATH/$SCRIPT_NAME.status
+fi
+
+case "$1" in
+  start)
+    func_generate
+    func_start
+    ;;
+  stop)
+    func_generate
+    func_stop
+    ;;
+  restart)
+    func_generate
+    func_stop
+    func_start
+    ;;
+  status)
+    func_status
+    ;;
+  generate)
+    func_generate
+    ;;
+  *)
+    exit 1
+esac
