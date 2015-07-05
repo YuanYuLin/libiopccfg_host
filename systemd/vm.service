@@ -1,0 +1,13 @@
+[Unit]
+Description=virtual machine
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/opt/iopc/scripts/vm.main start
+ExecStop=/opt/iopc/scripts/vm.main stop
+
+[Install]
+WantedBy=multi-user.target

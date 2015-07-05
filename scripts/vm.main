@@ -9,6 +9,6 @@ CFG_UTIL="/usr/local/bin/iopccfg"
 
 . $SCRIPT_PATH/script.init
 
-VM_CFG_FILE="/tmp/vmcfg"
+VM_CFG_FILE="$GEN_PATH/vmcfg"
 
 . $SCRIPT_PATH/script.run $ACTION

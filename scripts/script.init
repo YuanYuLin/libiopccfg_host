@@ -46,7 +46,7 @@ check_file()
   IS_FOUND="0"
 
   if [ ! -f $CFG_FILE ]; then
-    mkdir $CFG_PATH
+    mkdir -p $CFG_PATH
     IS_FOUND="1"
   fi
 

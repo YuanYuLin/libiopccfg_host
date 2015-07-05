@@ -4,7 +4,7 @@
   "vms":[
     {
       "start_on_boot":1,
-      "rootfs_img":"/vms/vm00.img",
+      "rootfs_img":"/vms/iopc/imgs/vm00.ext4",
       "fs_type":"ext4",
       "rootfs":"/home/lxc/vm00/fs",
       "name":"vm00",
@@ -21,7 +21,7 @@
     },
     {
       "start_on_boot":1,
-      "rootfs_img":"/vms/vm01.img",
+      "rootfs_img":"/vms/iopc/imgs/vm01.ext4",
       "fs_type":"ext4",
       "rootfs":"/home/lxc/vm01/fs",
       "name":"vm01",
