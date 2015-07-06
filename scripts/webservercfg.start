@@ -1,0 +1,17 @@
+#!/bin/sh
+
+func_start()
+{
+  get_value "$CFG_FILE" "type"
+  NW_TYPE=$GET_VALUE
+
+  get_value "$CFG_FILE" "version"
+  NW_VERSION=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.start_on_boot"
+  START_ON_BOOT=$GET_VALUE
+
+  if [ "$START_ON_BOOT" == "1" ]; then
+    . $GEN_START
+  fi
+}

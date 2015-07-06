@@ -1,0 +1,50 @@
+#!/bin/sh
+
+func_generate()
+{
+  get_value "$CFG_FILE" "type"
+  NW_TYPE=$GET_VALUE
+
+  get_value "$CFG_FILE" "version"
+  NW_VERSION=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.src_dir"
+  HTTP_SRC_DIR=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.dst_dir"
+  HTTP_DST_DIR=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.cfg_file"
+  HTTP_CFG_FILE=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.mod_file"
+  HTTP_MOD_FILE=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.confd_dir"
+  HTTP_CONFD_DIR=$GET_VALUE
+
+  get_array_string "$CFG_FILE" "lighttpd.confd_files"
+  HTTP_CONFD_FILES=$GET_ARRAY_STRING
+
+  echo "#!/bin/sh"							> "$GEN_START"
+  echo "mkdir -p $HTTP_DST_DIR"						>> "$GEN_START"
+  echo "mkdir -p $HTTP_DST_DIR/$HTTP_CONFD_DIR"				>> "$GEN_START"
+  echo "if [ ! -f $HTTP_DST_DIR/$HTTP_CFG_FILE ]; then"			>> "$GEN_START"
+  echo "cp $HTTP_SRC_DIR/$HTTP_CFG_FILE $HTTP_DST_DIR/$HTTP_CFG_FILE" 	>> "$GEN_START"
+  echo "fi"								>> "$GEN_START"
+  echo "if [ ! -f $HTTP_DST_DIR/$HTTP_MOD_FILE ]; then"			>> "$GEN_START"
+  echo "cp $HTTP_SRC_DIR/$HTTP_MOD_FILE $HTTP_DST_DIR/$HTTP_MOD_FILE" 	>> "$GEN_START"
+  echo "fi"								>> "$GEN_START"
+
+  for TMP_FILE in $HTTP_CONFD_FILES
+  do
+    echo "if [ ! -f $HTTP_DST_DIR/$HTTP_CONFD_DIR/$TMP_FILE ]; then"				>> "$GEN_START"
+    echo "cp $HTTP_SRC_DIR/$HTTP_CONFD_DIR/$TMP_FILE $HTTP_DST_DIR/$HTTP_CONFD_DIR/$TMP_FILE"	>> "$GEN_START"
+    echo "fi"											>> "$GEN_START"
+  done
+
+  echo "#!/bin/sh"							> "$GEN_STOP"
+
+  chmod 755 "$GEN_START"
+  chmod 755 "$GEN_STOP"
+}

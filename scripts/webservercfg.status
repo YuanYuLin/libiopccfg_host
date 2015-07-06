@@ -1,0 +1,6 @@
+#!/bin/sh
+
+func_status()
+{
+  echo "No Status"
+}

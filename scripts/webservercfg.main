@@ -1,0 +1,12 @@
+#!/bin/sh
+SCRIPT_NAME="webservercfg"
+ACTION=$1
+SCRIPT_PATH="/opt/iopc/scripts"
+GEN_PATH="/tmp/gen_scripts"
+CFG_PATH="/vms/configs"
+DEF_CFG_PATH="/opt/iopc/defconfig"
+CFG_UTIL="/usr/local/bin/iopccfg"
+
+. $SCRIPT_PATH/script.init
+
+. $SCRIPT_PATH/script.run $ACTION

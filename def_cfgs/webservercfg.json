@@ -1,0 +1,13 @@
+{
+  "type":"webservercfg",
+  "version":1,
+  "lighttpd":{
+    "start_on_boot":1,
+    "src_dir":"/opt/iopc/defconfig/lighttpd/",
+    "dst_dir":"/vms/configs/lighttpd/",
+    "cfg_file":"lighttpd.conf",
+    "mod_file":"modules.conf",
+    "confd_dir":"conf.d",
+    "confd_files":["access_log.conf" ,"debug.conf" ,"mime.conf", "dirlist.conf", "proxy.conf"],
+  }
+}
