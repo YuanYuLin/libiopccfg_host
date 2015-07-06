@@ -3,7 +3,6 @@ Description=Lighttpd Web Server
 After=network.target
 
 [Service]
-ExecStart=/opt/iopc/scripts/webservercfg.main start
 ExecStart=/usr/sbin/lighttpd-angel -f /vms/configs/lighttpd/lighttpd.conf -D
 ExecReload=/bin/kill -HUP $MAINPID
 

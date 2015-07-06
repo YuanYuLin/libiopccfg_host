@@ -8,6 +8,6 @@
     "cfg_file":"lighttpd.conf",
     "mod_file":"modules.conf",
     "confd_dir":"conf.d",
-    "confd_files":["access_log.conf" ,"debug.conf" ,"mime.conf", "dirlist.conf", "proxy.conf"],
+    "confd_files":["access_log.conf" ,"debug.conf" ,"mime.conf", "dirlisting.conf", "proxy.conf"],
   }
 }
