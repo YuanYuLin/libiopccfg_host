@@ -1,0 +1,18 @@
+{
+  "name":"dashboard",
+  "version":"1.0.0",
+  "folder":"dashboard",
+  "package":[
+    {
+      "mainmenu":{"name":"dashboard", "icon":"imgs/menu.jpg", "url":"dashboard.html"},
+      "files":[
+        "dashboard.html", 
+        "imgs/home.jpg",
+        "imgs/menu.jpg",
+        "imgs/packages.jpg",
+        "imgs/system.jpg",
+      ]
+    },
+  ],
+}
+

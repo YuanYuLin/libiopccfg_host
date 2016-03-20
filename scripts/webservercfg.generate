@@ -26,6 +26,12 @@ func_generate()
   get_array_string "$CFG_FILE" "lighttpd.confd_files"
   HTTP_CONFD_FILES=$GET_ARRAY_STRING
 
+  get_value "$CFG_FILE" "lighttpd.www_src"
+  HTTP_WWW_SRC=$GET_VALUE
+
+  get_value "$CFG_FILE" "lighttpd.www_dst"
+  HTTP_WWW_DST=$GET_VALUE
+
   echo "#!/bin/sh"							> "$GEN_START"
   echo "mkdir -p $HTTP_DST_DIR"						>> "$GEN_START"
   echo "mkdir -p $HTTP_DST_DIR/$HTTP_CONFD_DIR"				>> "$GEN_START"
@@ -34,6 +40,10 @@ func_generate()
   echo "fi"								>> "$GEN_START"
   echo "if [ ! -f $HTTP_DST_DIR/$HTTP_MOD_FILE ]; then"			>> "$GEN_START"
   echo "cp $HTTP_SRC_DIR/$HTTP_MOD_FILE $HTTP_DST_DIR/$HTTP_MOD_FILE" 	>> "$GEN_START"
+  echo "fi"								>> "$GEN_START"
+  echo "if [ ! -d $HTTP_WWW_DST ]; then"				>> "$GEN_START"
+  echo "mkdir -p $HTTP_WWW_DST"						>> "$GEN_START"
+  echo "cp -avr $HTTP_WWW_SRC/* $HTTP_WWW_DST"				>> "$GEN_START"
   echo "fi"								>> "$GEN_START"
 
   for TMP_FILE in $HTTP_CONFD_FILES
